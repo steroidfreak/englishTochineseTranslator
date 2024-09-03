@@ -3,10 +3,10 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import pkg from 'openai';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,6 +16,9 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Destructure the OpenAI class from the imported package
+const { OpenAI } = pkg;
 
 // Initialize the OpenAI client with the API key
 const openai = new OpenAI({
