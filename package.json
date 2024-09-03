@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.mjs"
   },
+  "type": "module",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.0",
     "dotenv": "^16.0.0",
