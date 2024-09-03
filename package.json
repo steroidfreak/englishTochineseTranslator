@@ -4,7 +4,8 @@
   "description": "Voice translation app using OpenAI API",
   "main": "server.mjs",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "postinstall": "npm install cors"
   },
   "type": "module",
   "dependencies": {

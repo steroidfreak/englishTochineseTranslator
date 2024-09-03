@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import OpenAI from 'openai';
-import cors from 'cors';
 import os from 'os';
 
 // Load environment variables from .env file
@@ -25,7 +24,14 @@ const openai = new OpenAI({
 });
 
 const app = express();
-app.use(cors());
+
+// Try to use cors, but continue if it's not available
+try {
+  const cors = await import('cors');
+  app.use(cors.default());
+} catch (error) {
+  console.warn('CORS module not found. Continuing without CORS.');
+}
 
 // Use os.tmpdir() for temporary file storage
 const upload = multer({ dest: os.tmpdir() });
