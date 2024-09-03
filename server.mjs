@@ -6,9 +6,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-import OpenAI from 'openai';
-import cors from 'cors';
-import os from 'os';
+import pkg from 'openai';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,23 +17,20 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Initialize the OpenAI client with the API key
-const openai = new OpenAI({
+// Use the default import and access the `OpenAI` class
+const openai = new pkg.OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 const app = express();
-app.use(cors());
-
-// Use os.tmpdir() for temporary file storage
-const upload = multer({ dest: os.tmpdir() });
+const upload = multer({ dest: 'uploads/' });
 
 app.use(express.static('public'));
 
 app.post('/process-audio', upload.single('audio'), async (req, res) => {
   try {
     const inputPath = req.file.path;
-    const outputPath = path.join(os.tmpdir(), 'processed.mp3');
+    const outputPath = path.join(__dirname, 'processed.mp3');
 
     // Convert to MP3
     await new Promise((resolve, reject) => {
@@ -74,10 +69,6 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
 
     const buffer = Buffer.from(await mp3.arrayBuffer());
 
-    // Clean up temporary files
-    fs.unlinkSync(inputPath);
-    fs.unlinkSync(outputPath);
-
     // Send back audio buffer, transcription, and translation
     res.json({
       audio: buffer.toString('base64'), // Convert buffer to base64 string
@@ -87,9 +78,9 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
 
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).send('An error occurred');
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
