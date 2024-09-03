@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-import pkg from 'openai';
+import OpenAI from 'openai';
 import cors from 'cors';
 import os from 'os';
 
@@ -18,9 +18,6 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Destructure the OpenAI class from the imported package
-const { OpenAI } = pkg;
 
 // Initialize the OpenAI client with the API key
 const openai = new OpenAI({
