@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-import pkg from 'openai';
+import OpenAI from 'openai';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -17,8 +17,8 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Use the default import and access the `OpenAI` class
-const openai = new pkg.OpenAI({
+// Initialize the OpenAI client with the API key
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
