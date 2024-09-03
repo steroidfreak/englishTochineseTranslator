@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: voice-translator
+    env: node
+    buildCommand: npm install
+    startCommand: node server.mjs
