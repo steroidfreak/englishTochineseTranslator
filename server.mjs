@@ -19,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Initialize the OpenAI client with the API key
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const app = express();
@@ -52,7 +52,7 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
     // Translate
     const completion = await openai.chat.completions.create({
       messages: [
-        { "role": "system", "content": "You are a translator, english to chinese or chinese to english expert." },
+        { "role": "system", "content": "You are a translator, English to Chinese or Chinese to English expert." },
         { "role": "user", "content": transcription },
       ],
       model: "gpt-4",
