@@ -3,7 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { OpenAI } from 'openai';
+import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
@@ -52,8 +52,8 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
     // Translate
     const completion = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a translator, English to Chinese or Chinese to English expert." },
-        { role: "user", content: transcription },
+        { "role": "system", "content": "You are a translator, English to Chinese or Chinese to English expert." },
+        { "role": "user", "content": transcription },
       ],
       model: "gpt-4",
     });
