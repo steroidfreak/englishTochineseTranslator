@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Translator</title>
+    <link href="style.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="row">
+        <button id="recordButton">Record</button>
+    </div>
+    <div class="row">
+        <p id="transcriptionText"></p>
+    </div>
+    <div class="row">
+        <p id="translationText"></p>
+    </div>
+    <div class="row">
+        <audio id="player" controls autoplay></audio>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('recordButton').addEventListener('click', async () => {
+            // Clear previous transcription and translation
+            document.getElementById('transcriptionText').textContent = '';
+            document.getElementById('translationText').textContent = '';
+
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                document.getElementById('recordButton').textContent = 'Record';
+            } else {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob, 'recording.wav');
+
+                    const response = await fetch('/process-audio', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json(); // Get JSON response
+                    const translatedAudioBlob = new Blob([new Uint8Array(atob(result.audio).split("").map(c => c.charCodeAt(0)))], { type: 'audio/mpeg' });
+                    const audioUrl = URL.createObjectURL(translatedAudioBlob);
+                    const audioPlayer = document.getElementById('player');
+
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.play(); // Autoplay the audio
+
+                    // Display transcription and translation
+                    document.getElementById('transcriptionText').textContent = result.transcription;
+                    document.getElementById('translationText').textContent = result.translation;
+
+                    // Clear audio chunks for the next recording
+                    audioChunks = [];
+                };
+
+                mediaRecorder.start();
+                document.getElementById('recordButton').textContent = 'Stop';
+            }
+        });
+    </script>
+</body>
+</html>
