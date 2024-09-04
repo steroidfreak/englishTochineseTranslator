@@ -25,8 +25,10 @@ const openai = new OpenAI({
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-app.use(express.static('public'));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Endpoint to process audio
 app.post('/process-audio', upload.single('audio'), async (req, res) => {
   try {
     const inputPath = req.file.path;
@@ -79,8 +81,17 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send('An error occurred');
+  } finally {
+    // Clean up uploaded files
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("Error deleting file:", err);
+    });
+    fs.unlink(outputPath, (err) => {
+      if (err) console.error("Error deleting file:", err);
+    });
   }
 });
 
+// Set the port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
