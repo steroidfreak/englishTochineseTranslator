@@ -18,9 +18,15 @@
     display: none; /* Hide the audio player by default */
 }
 .row {
-    display: flex;
+    /* display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 20px; */
+
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh; /* Full viewport height */
 }
 
 #transcriptionText, #translationText {
