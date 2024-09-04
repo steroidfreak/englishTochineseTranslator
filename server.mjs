@@ -30,9 +30,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint to process audio
 app.post('/process-audio', upload.single('audio'), async (req, res) => {
+  let outputPath; // Declare outputPath here
   try {
     const inputPath = req.file.path;
-    const outputPath = path.join(__dirname, 'processed.mp3');
+    outputPath = path.join(__dirname, 'processed.mp3'); // Assign outputPath here
 
     // Convert to MP3
     await new Promise((resolve, reject) => {
@@ -86,9 +87,11 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
     fs.unlink(req.file.path, (err) => {
       if (err) console.error("Error deleting file:", err);
     });
-    fs.unlink(outputPath, (err) => {
-      if (err) console.error("Error deleting file:", err);
-    });
+    if (outputPath) {
+      fs.unlink(outputPath, (err) => {
+        if (err) console.error("Error deleting file:", err);
+      });
+    }
   }
 });
 
