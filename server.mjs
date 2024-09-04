@@ -58,7 +58,7 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
         { role: "system", content: "You are a translator, English to Chinese or Chinese to English expert." },
         { role: "user", content: transcription },
       ],
-      model: "gpt-4",
+      model: "gpt-4o-mini",
     });
 
     const translation = completion.choices[0].message.content;
