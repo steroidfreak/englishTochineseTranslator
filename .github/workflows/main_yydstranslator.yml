@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,15 +26,12 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.zip
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,20 +47,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0F40EBF0D7094A0592E4EE3FE7AE8EB1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1E58159B85024BE78A455AC05FB3E85B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_93D9C39A182B4110BDC1BA82B6C0E674 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_CD4772E1A58049EABE24389AFD4E38E4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_21A9B87C576E47F08E400AD0F2239FAF }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0B7AC97C8EA84D7A962B08D4BCD2550C }}
 
       - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
           app-name: 'yydsTranslator'
           slot-name: 'Production'
